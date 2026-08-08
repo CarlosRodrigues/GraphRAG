@@ -1,0 +1,23 @@
+services:
+  graphrag-db:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: graphrag_postgres
+    command: postgres -c shared_preload_libraries=age
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: graphrag_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d graphrag_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
